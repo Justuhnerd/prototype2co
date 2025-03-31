@@ -1,0 +1,38 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #a6192e;
+    padding: 10px;
+}
+
+.logo {
+    width: 80px;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+.btn-danger {
+    background-color: #870a3c;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #a6192e;
+}
+
+/* Progress Bar */
+.progress-bar {
+    font-size: 12px;
+}
