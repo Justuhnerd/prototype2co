@@ -2,27 +2,275 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications - SmartSpend</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ABSA SmartSpend - Notifications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --absa-primary: #870a3c;
+            --absa-secondary: #00A4E8;
+            --absa-danger: #dc0032;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            background-color: var(--absa-primary);
+            padding: 12px 0;
+        }
+        
+        .card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+        }
+        
+        .notification-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .notification-unread {
+            background-color: #f0f8ff;
+        }
+        
+        .notification-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .icon-transaction {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .icon-alert {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .icon-promo {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .icon-system {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Notifications</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <section class="notification">
-            <h3>🚨 Overspending Alert</h3>
-            <p>You have exceeded your entertainment budget by 20% this month.</p>
-        </section>
-        <section class="notification">
-            <h3>💰 Savings Goal Reached!</h3>
-            <p>Congratulations! You have saved P5,000 towards your travel goal.</p>
-        </section>
-    </main>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <img src="images/absa_logo_red.png" class="logo" alt="ABSA Logo" style="height: 28px;">
+        <span class="navbar-brand ms-2">Notifications</span>
+        
+        <div class="ms-auto d-flex align-items-center">
+            <a href="index.html" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Recent Notifications</h5>
+            <button class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-check-double me-1"></i> Mark all as read
+            </button>
+        </div>
+        
+        <div class="notification-list">
+            <!-- Unread Notification -->
+            <div class="notification-item notification-unread d-flex">
+                <div class="notification-icon icon-alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <strong>Suspicious Login Detected</strong>
+                        <span class="badge-dot bg-danger"></span>
+                    </div>
+                    <p class="mb-1">New login from Chrome on Windows in Johannesburg at 14:32</p>
+                    <div class="d-flex justify-content-between">
+                        <small class="notification-time">Just now</small>
+                        <button class="btn btn-sm btn-outline-danger">Secure account</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transaction Notification -->
+            <div class="notification-item d-flex">
+                <div class="notification-icon icon-transaction">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <strong>Payment Received</strong>
+                        <span class="badge-dot bg-primary"></span>
+                    </div>
+                    <p class="mb-1">R5,000 deposit from ABC Corp (Ref: SALARYJUL23)</p>
+                    <div class="d-flex justify-content-between">
+                        <small class="notification-time">2 hours ago</small>
+                        <button class="btn btn-sm btn-outline-primary">View details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Promo Notification -->
+            <div class="notification-item d-flex">
+                <div class="notification-icon icon-promo">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <strong>Special Offer</strong>
+                        <span class="badge-dot bg-success"></span>
+                    </div>
+                    <p class="mb-1">Get 15% cashback on Uber rides this weekend with your ABSA card</p>
+                    <div class="d-flex justify-content-between">
+                        <small class="notification-time">Yesterday</small>
+                        <button class="btn btn-sm btn-outline-success">View offer</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Notification -->
+            <div class="notification-item d-flex">
+                <div class="notification-icon icon-system">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <strong>System Maintenance</strong>
+                        <span class="badge-dot bg-purple"></span>
+                    </div>
+                    <p class="mb-1">Planned maintenance this Saturday from 2:00 AM to 4:00 AM</p>
+                    <div class="d-flex justify-content-between">
+                        <small class="notification-time">Jul 25, 2023</small>
+                        <button class="btn btn-sm btn-outline-secondary">More info</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Older Notification -->
+            <div class="notification-item d-flex">
+                <div class="notification-icon icon-transaction">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <strong>Card Payment</strong>
+                    </div>
+                    <p class="mb-1">R249.99 paid to Netflix with your ABSA Platinum Card</p>
+                    <div class="d-flex justify-content-between">
+                        <small class="notification-time">Jul 24, 2023</small>
+                        <button class="btn btn-sm btn-outline-primary">View transaction</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <button class="btn btn-link text-decoration-none">View older notifications</button>
+        </div>
+    </div>
+    
+    <div class="card p-3">
+        <h5 class="mb-3">Notification Settings</h5>
+        
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+            <label class="form-check-label" for="pushNotifications">Push Notifications</label>
+        </div>
+        
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+            <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+        </div>
+        
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="smsNotifications">
+            <label class="form-check-label" for="smsNotifications">SMS Notifications</label>
+        </div>
+        
+        <h6 class="mt-4 mb-3">Notification Types</h6>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="transactionAlerts" checked>
+            <label class="form-check-label" for="transactionAlerts">Transaction alerts</label>
+        </div>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="securityAlerts" checked>
+            <label class="form-check-label" for="securityAlerts">Security alerts</label>
+        </div>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="promotionalOffers" checked>
+            <label class="form-check-label" for="promotionalOffers">Promotional offers</label>
+        </div>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="accountUpdates">
+            <label class="form-check-label" for="accountUpdates">Account updates</label>
+        </div>
+        
+        <div class="d-grid gap-2 mt-4">
+            <button class="btn btn-danger">Save Settings</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mark as read functionality
+        const notificationItems = document.querySelectorAll('.notification-item');
+        notificationItems.forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.remove('notification-unread');
+                const dot = this.querySelector('.badge-dot');
+                if (dot) dot.style.display = 'none';
+            });
+        });
+    });
+</script>
 </body>
 </html>
