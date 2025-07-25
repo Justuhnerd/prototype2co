@@ -13,6 +13,7 @@
             --absa-primary: #870a3c;
             --absa-secondary: #00A4E8;
             --absa-danger: #dc0032;
+            --absa-success: #28a745;
         }
         
         body {
@@ -47,6 +48,7 @@
             border-radius: 18px;
             margin-bottom: 8px;
             max-width: 80%;
+            animation: fadeIn 0.3s ease-out;
         }
         
         .user-message {
@@ -62,17 +64,28 @@
             border-bottom-left-radius: 4px;
         }
         
+        .ai-message ul, .ai-message ol {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .ai-message li {
+            margin-bottom: 8px;
+        }
+        
         .example-question {
             cursor: pointer;
             transition: all 0.2s;
             padding: 10px 15px;
             border-radius: 8px;
             margin-bottom: 8px;
+            border: 1px solid #e9ecef;
         }
         
         .example-question:hover {
             background-color: #f8f9fa;
             transform: translateX(5px);
+            border-color: var(--absa-secondary);
         }
         
         .typing-indicator {
@@ -106,6 +119,64 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-5px); }
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .savings-tip {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--absa-secondary);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin: 12px 0;
+        }
+        
+        .savings-tip-header {
+            font-weight: bold;
+            color: var(--absa-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            background-color: var(--absa-primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .progress-thin {
+            height: 8px;
+            margin-top: 8px;
+        }
+        
+        .positive-change {
+            color: var(--absa-success);
+        }
+        
+        .negative-change {
+            color: var(--absa-danger);
+        }
+        
+        .spending-summary {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        
+        .spending-category {
+            margin-bottom: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -128,39 +199,124 @@
 <div class="container mt-4">
     <div class="ai-chat-container">
         <div class="card p-3 mb-3">
-            <div class="d-flex align-items-center mb-3">
-                <div class="ai-icon"><i class="fas fa-robot"></i></div>
-                <h5 class="mb-0 ms-2">Smart Spend AI Assistant</h5>
-            </div>
-            
+
+           <div class="d-flex align-items-center mb-3 p-3" style="background: linear-gradient(90deg, rgba(135,10,60,0.1) 0%, rgba(0,164,232,0.1) 100%); border-radius: 12px; border-left: 4px solid var(--absa-primary);">
+    <div class="position-relative">
+        <div class="ai-avatar" style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--absa-primary) 0%, var(--absa-secondary) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <i class="fas fa-robot fa-lg" style="color: white;"></i>
+            <div class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-2 border-white" style="width: 14px; height: 14px;"></div>
+        </div>
+    </div>
+    <div class="ms-3">
+        <h4 class="mb-0" style="color: var(--absa-primary); font-weight: 600;">SmartSpend AI</h4>
+        <div class="d-flex align-items-center">
+            <span class="badge rounded-pill bg-primary me-2" style="background-color: var(--absa-secondary) !important; font-size: 0.65rem; font-weight: 500;">PERSONAL ASSISTANT</span>
+            <span class="text-muted small" style="font-weight: 500;">Powered by ABSA</span>
+        </div>
+    </div>
+    <div class="ms-auto">
+        <button class="btn btn-sm btn-outline-primary" style="border-color: var(--absa-primary); color: var(--absa-primary);">
+            <i class="fas fa-question-circle me-1"></i> Help
+        </button>
+    </div>
+</div>
             <!-- Chat Container -->
             <div id="chat-container" style="height: 400px; overflow-y: auto; margin-bottom: 20px;">
                 <!-- Initial greeting message -->
                 <div class="chat-message ai-message">
-                    <p>Hello! I'm your Smart Spend AI assistant. I can help you with:</p>
-                    <ul>
-                        <li>Analyzing your spending patterns</li>
-                        <li>Finding ways to save money</li>
-                        <li>Explaining transactions</li>
-                        <li>Budgeting advice</li>
-                    </ul>
-                    <p>What would you like to know about your finances today?</p>
+                    <div class="d-flex align-items-start mb-2">
+                        <div>
+                            <div class="d-flex align-items-center">
+                                <h5 class="mb-0" style="color: var(--absa-primary);">Hi Thabo, I'm ABSA SmartSpend</h5>
+                                <span class="badge bg-primary ms-2" style="background-color: var(--absa-secondary) !important;">AI Assistant</span>
+                            </div>
+                            <small class="text-muted">Your personal financial coach</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-2">
+                        <p>Welcome back! 💰 I've been analyzing your finances and I'm here to help you:</p>
+                        
+                        <div class="row row-cols-2 g-3 mb-3">
+                            <div class="col">
+                                <div class="p-3 rounded" style="background-color: rgba(135, 10, 60, 0.05); border-left: 3px solid var(--absa-primary);">
+                                    <i class="fas fa-chart-pie text-primary mb-2"></i>
+                                    <h6 class="mb-1">Track Spending</h6>
+                                    <p class="small mb-0">See exactly where your money goes</p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 rounded" style="background-color: rgba(0, 164, 232, 0.05); border-left: 3px solid var(--absa-secondary);">
+                                    <i class="fas fa-piggy-bank text-secondary mb-2"></i>
+                                    <h6 class="mb-1">Save Smarter</h6>
+                                    <p class="small mb-0">Find hidden savings opportunities</p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 rounded" style="background-color: rgba(220, 0, 50, 0.05); border-left: 3px solid var(--absa-danger);">
+                                    <i class="fas fa-bell text-danger mb-2"></i>
+                                    <h6 class="mb-1">Get Alerts</h6>
+                                    <p class="small mb-0">Avoid overspending</p>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 rounded" style="background-color: rgba(40, 167, 69, 0.05); border-left: 3px solid var(--absa-success);">
+                                    <i class="fas fa-bullseye text-success mb-2"></i>
+                                    <h6 class="mb-1">Reach Goals</h6>
+                                    <p class="small mb-0">Plan for what matters most</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absa-card p-3 mb-3" style="background: linear-gradient(135deg, rgba(135,10,60,0.1) 0%, rgba(0,164,232,0.1) 100%); border-radius: 12px; border-left: 4px solid var(--absa-primary);">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-lightbulb fa-2x" style="color: var(--absa-secondary);"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1" style="color: var(--absa-primary);">Smart Tip Just For You</h6>
+                                    <p class="mb-0">Thabo, based on your spending patterns, you could save <strong>P500/month</strong> by making small changes to dining and entertainment. Want me to show you how?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <img src="images/absa_logo_icon.png" style="width: 24px; height: 24px;">
+                            </div>
+                            <div class="flex-grow-1 ms-2">
+                                <p class="mb-0" style="color: var(--absa-primary); font-weight: 500;">What would you like to focus on today?</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Example questions -->
-                <div class="mt-3">
-                    <h6 class="text-muted mb-2">Try asking:</h6>
+                <div class="mt-3" id="example-questions">
+                    <h6 class="text-muted mb-2">Try asking me:</h6>
                     <div class="example-question" onclick="askQuestion(this)">
-                        <i class="fas fa-comment-dots me-2"></i> How much did I spend on groceries last month?
+                        <i class="fas fa-shopping-basket me-2"></i> How much did I spend on groceries last month?
                     </div>
                     <div class="example-question" onclick="askQuestion(this)">
-                        <i class="fas fa-comment-dots me-2"></i> Show me my biggest expenses this week
+                        <i class="fas fa-chart-line me-2"></i> Show me my spending trends for dining out
                     </div>
                     <div class="example-question" onclick="askQuestion(this)">
-                        <i class="fas fa-comment-dots me-2"></i> What subscriptions can I cancel to save money?
+                        <i class="fas fa-money-bill-wave me-2"></i> What subscriptions can I cancel to save money?
                     </div>
                     <div class="example-question" onclick="askQuestion(this)">
-                        <i class="fas fa-comment-dots me-2"></i> Compare my spending this month to last month
+                        <i class="fas fa-exchange-alt me-2"></i> Compare my spending this month to last month
+                    </div>
+                    <div class="example-question" onclick="askQuestion(this)">
+                        <i class="fas fa-piggy-bank me-2"></i> How can I save P500 this month?
+                    </div>
+                    <div class="example-question" onclick="askQuestion(this)">
+                        <i class="fas fa-utensils me-2"></i> Am I spending too much on takeout?
+                    </div>
+                    <div class="example-question" onclick="askQuestion(this)">
+                        <i class="fas fa-bolt me-2"></i> What unusual transactions do I have this month?
+                    </div>
+                    <div class="example-question" onclick="askQuestion(this)">
+                        <i class="fas fa-calendar-check me-2"></i> Did I stay within my budget last week?
                     </div>
                 </div>
             </div>
@@ -201,6 +357,9 @@
         addMessage(message, 'user');
         input.value = '';
         
+        // Hide example questions after user asks something
+        document.getElementById('example-questions').classList.add('hidden');
+        
         // Show typing indicator
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'chat-message ai-message';
@@ -218,6 +377,11 @@
             // Add AI response
             const response = generateAIResponse(message);
             addMessage(response, 'ai');
+            
+            // Show follow-up questions if it's the first response
+            if (document.querySelectorAll('.chat-message.ai-message').length === 2) {
+                showFollowUpQuestions();
+            }
         }, 1500);
     }
     
@@ -226,7 +390,14 @@
         const chatContainer = document.getElementById('chat-container');
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${sender}-message`;
-        messageDiv.innerHTML = `<p>${text}</p>`;
+        
+        // Check if the text contains HTML tags
+        if (/<[a-z][\s\S]*>/i.test(text)) {
+            messageDiv.innerHTML = text;
+        } else {
+            messageDiv.innerHTML = `<p>${text}</p>`;
+        }
+        
         chatContainer.appendChild(messageDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -234,11 +405,272 @@
     // Function to generate AI responses (simplified for demo)
     function generateAIResponse(question) {
         const responses = {
-            "groceries": "Last month you spent P1,850 on groceries across 12 transactions. This is 15% higher than your 3-month average of P1,600. Your biggest grocery purchase was R420 at Checkers on the 15th.",
-            "biggest expenses": "Your biggest expenses this week:<br><br>1. P1,200 - Internet bill (automatic payment)<br>2. P780 - Dinner at The Test Kitchen<br>3. P450 - Uber rides<br>4. P320 - Groceries at Woolworths",
-            "subscriptions": "You have 3 subscriptions that could be optimized:<br><br>1. Netflix Premium (P199/month) - Consider downgrading to Standard (P99)<br>2. Spotify Family (P99/month) - Only you use it, switch to Individual (RP9)<br>3. Gym membership (P50/month) - You've only visited twice this month",
-            "compare": "Here's your spending comparison:<br><br>This month: P8,450<br>Last month: P9,200 (8% decrease)<br><br>Biggest reductions:<br>- Dining out: P1,200 (down from P2,100)<br>- Entertainment: P600 (down from P950)",
-            "default": "I can help analyze your spending patterns and suggest ways to save. Try asking about specific categories like groceries, dining, or subscriptions, or ask for a general spending summary."
+            "groceries": `
+                <p>Here's your grocery spending analysis for last month:</p>
+                <div class="spending-summary">
+                    <div class="spending-category">
+                        <div class="d-flex justify-content-between">
+                            <span><strong>Total Grocery Spend:</strong> P1,850</span>
+                            <span class="negative-change">+15% from average</span>
+                        </div>
+                        <div class="progress progress-thin">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Breakdown by store:</strong></p>
+                    <ul>
+                        <li>Checkers: P420 (22.7%)</li>
+                        <li>Woolworths: P380 (20.5%)</li>
+                        <li>Pick n Pay: P320 (17.3%)</li>
+                        <li>Other stores: P730 (39.5%)</li>
+                    </ul>
+                </div>
+                
+                <div class="savings-tip">
+                    <div class="savings-tip-header"><i class="fas fa-lightbulb me-2"></i>Savings Opportunity</div>
+                    <p>You could save about P200/month on groceries by doing one weekly shop at Checkers instead of multiple smaller trips to premium stores.</p>
+                </div>
+            `,
+            "biggest expenses": `
+                <p>Your biggest expenses this week:</p>
+                <ol>
+                    <li><strong>P1,200</strong> - Internet bill (automatic payment)</li>
+                    <li><strong>P780</strong> - Dinner at The Test Kitchen <span class="category-tag">Dining</span></li>
+                    <li><strong>P450</strong> - Uber rides <span class="category-tag">Transport</span></li>
+                    <li><strong>P320</strong> - Groceries at Woolworths <span class="category-tag">Groceries</span></li>
+                </ol>
+                
+                <p>This is <span class="positive-change">12% less</span> than your typical weekly spending of P3,100.</p>
+            `,
+            "subscriptions": `
+                <p>You have 5 active subscriptions totaling <strong>P457/month</strong>:</p>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Cost</th>
+                            <th>Usage</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Netflix Premium</td>
+                            <td>P199/month</td>
+                            <td>Watched 2 shows</td>
+                            <td><span class="badge bg-danger">Downgrade</span></td>
+                        </tr>
+                        <tr>
+                            <td>Spotify Family</td>
+                            <td>P99/month</td>
+                            <td>Only you use it</td>
+                            <td><span class="badge bg-danger">Switch to Individual</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gym membership</td>
+                            <td>P50/month</td>
+                            <td>Visited twice</td>
+                            <td><span class="badge bg-warning">Pause</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cloud Storage</td>
+                            <td>P79/month</td>
+                            <td>45% used</td>
+                            <td><span class="badge bg-success">Keep</span></td>
+                        </tr>
+                        <tr>
+                            <td>News Subscription</td>
+                            <td>P30/month</td>
+                            <td>Opened 3 times</td>
+                            <td><span class="badge bg-danger">Cancel</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="savings-tip">
+                    <div class="savings-tip-header"><i class="fas fa-calculator me-2"></i>Potential Savings</div>
+                    <p>By making these changes, you could save <strong>P258/month</strong> (56% of your subscription costs)!</p>
+                </div>
+            `,
+            "compare": `
+                <p>Here's your spending comparison between this month and last month:</p>
+                <div class="spending-summary">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <h6>This Month</h6>
+                            <h4>P8,450</h4>
+                        </div>
+                        <div>
+                            <h6>Last Month</h6>
+                            <h4>P9,200</h4>
+                        </div>
+                    </div>
+                    
+                    <p class="positive-change"><i class="fas fa-arrow-down me-1"></i> 8% decrease in total spending</p>
+                    
+                    <p><strong>Biggest changes by category:</strong></p>
+                    <ul>
+                        <li><span class="positive-change">Dining out: ↓43%</span> (P1,200 vs P2,100)</li>
+                        <li><span class="positive-change">Entertainment: ↓37%</span> (P600 vs P950)</li>
+                        <li><span class="negative-change">Groceries: ↑15%</span> (P1,850 vs P1,600)</li>
+                        <li><span class="positive-change">Transport: ↓22%</span> (P780 vs P1,000)</li>
+                    </ul>
+                </div>
+            `,
+            "save 500": `
+                <p>Here are 3 ways you could save P500 this month based on your spending patterns:</p>
+                
+                <div class="spending-summary">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3" style="font-size: 24px;">1</div>
+                        <div>
+                            <h6>Optimize Subscriptions</h6>
+                            <p>Potential savings: <strong>P258/month</strong></p>
+                            <p>Downgrade Netflix and cancel unused news subscription.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3" style="font-size: 24px;">2</div>
+                        <div>
+                            <h6>Reduce Dining Out</h6>
+                            <p>Potential savings: <strong>P200/month</strong></p>
+                            <p>Cut 2 restaurant meals and replace with home cooking.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center">
+                        <div class="me-3" style="font-size: 24px;">3</div>
+                        <div>
+                            <h6>Smart Grocery Shopping</h6>
+                            <p>Potential savings: <strong>P150/month</strong></p>
+                            <p>Shop at Checkers instead of premium stores for basics.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p>Total potential savings: <strong>P608/month</strong> - that exceeds your P500 goal!</p>
+            `,
+            "takeout": `
+                <p>Your takeout spending analysis:</p>
+                <div class="spending-summary">
+                    <p>This month you've spent <strong>P1,750</strong> on takeout across 14 orders.</p>
+                    <p>That's <span class="negative-change">P125/order</span> on average.</p>
+                    
+                    <div class="progress progress-thin mb-3">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    
+                    <p>This is <span class="negative-change">28% higher</span> than your 3-month average of P1,370.</p>
+                </div>
+                
+                <div class="savings-tip">
+                    <div class="savings-tip-header"><i class="fas fa-utensils me-2"></i>Healthy Alternative</div>
+                    <p>For the price of 2 takeout meals, you could buy groceries for 5 home-cooked meals that are often healthier too!</p>
+                </div>
+            `,
+            "unusual": `
+                <p>I've identified 3 unusual transactions this month:</p>
+                <div class="spending-summary">
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                        <div>
+                            <strong>P780 - The Test Kitchen</strong><br>
+                            <small>15 July • Dining</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning">Unusually high</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                        <div>
+                            <strong>P320 - Uber ride</strong><br>
+                            <small>18 July • 3:15 AM</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-info">Unusual time</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>P150 - Unknown Merchant</strong><br>
+                            <small>22 July • Online</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-danger">Unrecognized</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <p>Would you like me to investigate any of these further?</p>
+            `,
+            "budget": `
+                <p>Your weekly budget status:</p>
+                <div class="spending-summary">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6>Budget</h6>
+                            <h4>P3,000</h4>
+                        </div>
+                        <div>
+                            <h6>Actual</h6>
+                            <h4>P2,750</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="progress progress-thin mb-3">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 91.7%" aria-valuenow="91.7" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    
+                    <p class="positive-change"><i class="fas fa-check-circle me-1"></i> You stayed within budget with P250 remaining!</p>
+                    
+                    <p><strong>Category breakdown:</strong></p>
+                    <ul>
+                        <li>Groceries: P850 (28% of budget)</li>
+                        <li>Dining: P600 (20% of budget)</li>
+                        <li>Transport: P500 (17% of budget)</li>
+                        <li>Entertainment: P400 (13% of budget)</li>
+                        <li>Other: P400 (13% of budget)</li>
+                    </ul>
+                </div>
+            `,
+            "trends": `
+                <p>Your dining out spending trends over the last 6 months:</p>
+                <div class="spending-summary">
+                    <p><strong>Monthly Average:</strong> P1,850</p>
+                    <p><strong>Highest Month:</strong> P2,400 (December 2023)</p>
+                    <p><strong>Lowest Month:</strong> P1,200 (February 2024)</p>
+                    
+                    <p><strong>Recent Trend:</strong> <span class="positive-change">↓15% decrease</span> over last 3 months</p>
+                    
+                    <p><strong>Busiest Days:</strong> Fridays and Saturdays account for 68% of your dining spending</p>
+                </div>
+                
+                <div class="savings-tip">
+                    <div class="savings-tip-header"><i class="fas fa-calendar-alt me-2"></i>Pattern Recognition</div>
+                    <p>You tend to spend more on dining during the last week of the month. Planning meals ahead during this time could help maintain your positive trend.</p>
+                </div>
+            `,
+            "default": `
+                <p>I can help analyze your spending patterns and suggest ways to save. Here are some things I can help with:</p>
+                <ul>
+                    <li>Detailed spending breakdowns by category</li>
+                    <li>Comparison with previous periods</li>
+                    <li>Identification of unusual transactions</li>
+                    <li>Personalized savings recommendations</li>
+                    <li>Budget tracking and forecasting</li>
+                </ul>
+                
+                <p>Try asking something like:</p>
+                <ul>
+                    <li>"How much did I spend on [category] last month?"</li>
+                    <li>"Where can I cut back to save money?"</li>
+                    <li>"Show me my spending trends for [category]"</li>
+                    <li>"Did I stay within my budget last week?"</li>
+                </ul>
+            `
         };
         
         question = question.toLowerCase();
@@ -251,9 +683,44 @@
             return responses.subscriptions;
         } else if (question.includes('compare') || question.includes('last month') || question.includes('previous')) {
             return responses.compare;
+        } else if (question.includes('500') || question.includes('save money') || question.includes('cut back')) {
+            return responses["save 500"];
+        } else if (question.includes('takeout') || question.includes('dining') || question.includes('restaurant')) {
+            return responses.takeout;
+        } else if (question.includes('unusual') || question.includes('strange') || question.includes('unknown')) {
+            return responses.unusual;
+        } else if (question.includes('budget') || question.includes('limit') || question.includes('target')) {
+            return responses.budget;
+        } else if (question.includes('trend') || question.includes('pattern') || question.includes('history')) {
+            return responses.trends;
         } else {
             return responses.default;
         }
+    }
+    
+    // Show follow-up questions after first response
+    function showFollowUpQuestions() {
+        const followUps = [
+            "Show me my entertainment spending",
+            "What's my average monthly spend on transport?",
+            "How much could I save by eating out less?",
+            "Do I have any recurring payments I forgot about?"
+        ];
+        
+        const container = document.createElement('div');
+        container.className = 'mt-3';
+        container.innerHTML = '<h6 class="text-muted mb-2">You might also want to know:</h6>';
+        
+        followUps.forEach(question => {
+            const div = document.createElement('div');
+            div.className = 'example-question';
+            div.innerHTML = `<i class="fas fa-comment-dots me-2"></i> ${question}`;
+            div.onclick = function() { askQuestion(this); };
+            container.appendChild(div);
+        });
+        
+        document.getElementById('chat-container').appendChild(container);
+        document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
     }
     
     // Event listeners

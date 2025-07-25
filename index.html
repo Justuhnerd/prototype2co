@@ -12,11 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         :root {
             --absa-primary: #870a3c;
             --absa-secondary: #00A4E8;
             --absa-danger: #dc0032;
+            --absa-success: #28a745;
         }
         
         body {
@@ -83,40 +86,126 @@
             color: var(--absa-danger);
         }
         
-        /* New styles for AI Chat page */
-        .ai-chat-container {
-            max-width: 800px;
-            margin: 0 auto;
+        /* New styles for graphs */
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-bottom: 15px;
         }
         
-        .chat-message {
-            padding: 12px 16px;
-            border-radius: 18px;
-            margin-bottom: 8px;
-            max-width: 80%;
+        .chart-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
         }
         
-        .user-message {
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 10px 5px 0;
+            cursor: pointer;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        
+        .legend-text {
+            font-size: 12px;
+        }
+        
+        .time-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .time-btn {
+            border: none;
+            background: none;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .time-btn.active {
             background-color: var(--absa-primary);
             color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
         }
         
-        .ai-message {
-            background-color: #f0f0f0;
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-        
-        .example-question {
+        .graph-card {
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
         
-        .example-question:hover {
-            background-color: #f8f9fa;
-            transform: translateX(5px);
+        .graph-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .graph-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        /* Sparkline styles */
+        .sparkline-container {
+            height: 40px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        /* New spending breakdown card */
+        .breakdown-card {
+            border-left: 4px solid var(--absa-secondary);
+        }
+        
+        .category-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .category-row:last-child {
+            border-bottom: none;
+        }
+        
+        .category-name {
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--absa-primary);
         }
     </style>
 </head>
@@ -125,9 +214,14 @@
 <!-- 🔹 Modern Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <img src="images/absa_logo_red.png" class="logo" alt="ABSA Logo" style="height: 28px;">
+        <img src="images/absa_logo_red.png" class="logo" alt="ABSA Logo" style="height: 50px;">
         
         <div class="ms-auto d-flex align-items-center">
+            <!-- New Financial Wellness Hub Button -->
+            <a href="FinancialWellnessHub.html" class="btn btn-outline-light btn-sm me-2">
+                <i class="fas fa-hands-helping me-1"></i> Financial Wellness
+            </a>
+            
             <div class="dropdown">
                 <span class="text-white me-2 dropdown-toggle" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle me-1"></i>
@@ -140,14 +234,15 @@
                     <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                 </ul>
             </div>
-            <button class="btn btn-light position-relative">
-                <i class="fas fa-bell"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
-            </button>
+            <a href="notifications.html">
+                <button class="btn btn-light position-relative">
+                  <i class="fas fa-bell"></i>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                </button>
+            </a>
         </div>
     </div>
 </nav>
-
 <!-- 🔹 Main Content -->
 <div class="container mt-4">
     <!-- Account Overview -->
@@ -181,7 +276,6 @@
             <button class="btn btn-sm btn-ai ms-auto" id="ask-ai">
                 <i class="fas fa-microphone me-1"></i> Ask AI
             </button>
-            <!-- New button to navigate to Smart Spend AI Chat -->
             <button class="btn btn-sm btn-outline-primary ms-2" onclick="window.location.href='smart-spend-ai-chat.html'">
                 <i class="fas fa-comments me-1"></i> Smart Spend AI Chat
             </button>
@@ -208,38 +302,148 @@
         </div>
     </div>
 
-    <!-- Spending Analytics -->
-    <div class="card analytics-card p-3">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="mb-0"><i class="fas fa-chart-pie me-1"></i> Spending Analytics</h6>
-            <div class="btn-group btn-group-sm">
-                <button class="btn btn-time active">Week</button>
-                <button class="btn btn-time">Month</button>
-                <button class="btn btn-time">Year</button>
+    <!-- 🔹 Enhanced Spending Analytics Section -->
+    <div class="row">
+        <!-- Main Spending Chart -->
+        <div class="col-md-8">
+            <div class="card analytics-card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0"><i class="fas fa-chart-pie me-1"></i> Spending Analytics</h6>
+                    <div class="time-selector">
+                        <button class="time-btn active" data-period="week">Week</button>
+                        <button class="time-btn" data-period="month">Month</button>
+                        <button class="time-btn" data-period="year">Year</button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="spendingChart"></canvas>
+                </div>
+                
+                <div class="chart-legend" id="chartLegend"></div>
+                
+                <div class="mt-3 text-center">
+                    <small class="text-muted"><i class="fas fa-arrow-up text-success me-1"></i> 12% less than last month</small>
+                </div>
             </div>
         </div>
         
-        <div class="chart-container" style="position: relative; height:200px;">
-            <canvas id="spendingChart"></canvas>
+        <!-- Mini Trend Graphs -->
+        <div class="col-md-4">
+            <div class="card p-3 h-100">
+                <h6 class="mb-3"><i class="fas fa-chart-line me-1"></i> Spending Trends</h6>
+                
+                <!-- Groceries Trend -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="graph-title"><i class="fas fa-shopping-basket me-1"></i> Groceries</span>
+                        <span class="text-danger small">+15%</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="groceriesTrend"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Dining Trend -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="graph-title"><i class="fas fa-utensils me-1"></i> Dining Out</span>
+                        <span class="text-danger small">+20%</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="diningTrend"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Transport Trend -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="graph-title"><i class="fas fa-car me-1"></i> Transport</span>
+                        <span class="text-success small">-8%</span>
+                    </div>
+                    <div class="sparkline-container">
+                        <canvas id="transportTrend"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 🔹 New Detailed Spending Breakdown -->
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card p-3 breakdown-card">
+                <h6 class="mb-3"><i class="fas fa-list-alt me-1"></i> Monthly Spending Breakdown</h6>
+                
+                <div class="category-row">
+                    <div class="category-name">
+                        <div class="category-icon"><i class="fas fa-home"></i></div>
+                        <span>Housing</span>
+                    </div>
+                    <div>
+                        <span class="fw-bold">P5,200</span>
+                        <span class="text-muted small ms-2">45%</span>
+                    </div>
+                </div>
+                
+                <div class="category-row">
+                    <div class="category-name">
+                        <div class="category-icon"><i class="fas fa-shopping-basket"></i></div>
+                        <span>Groceries</span>
+                    </div>
+                    <div>
+                        <span class="fw-bold">P1,850</span>
+                        <span class="text-danger small ms-2">+15%</span>
+                    </div>
+                </div>
+                
+                <div class="category-row">
+                    <div class="category-name">
+                        <div class="category-icon"><i class="fas fa-utensils"></i></div>
+                        <span>Dining Out</span>
+                    </div>
+                    <div>
+                        <span class="fw-bold">P1,200</span>
+                        <span class="text-danger small ms-2">+20%</span>
+                    </div>
+                </div>
+                
+                <div class="category-row">
+                    <div class="category-name">
+                        <div class="category-icon"><i class="fas fa-car"></i></div>
+                        <span>Transport</span>
+                    </div>
+                    <div>
+                        <span class="fw-bold">P780</span>
+                        <span class="text-success small ms-2">-8%</span>
+                    </div>
+                </div>
+                
+                <div class="category-row">
+                    <div class="category-name">
+                        <div class="category-icon"><i class="fas fa-film"></i></div>
+                        <span>Entertainment</span>
+                    </div>
+                    <div>
+                        <span class="fw-bold">P600</span>
+                        <span class="text-success small ms-2">-37%</span>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <div class="legend mt-3 d-flex flex-wrap justify-content-center">
-            <div class="legend-item me-3 mb-1">
-                <span class="legend-color" style="display: inline-block; width:12px; height:12px; background:#870a3c; border-radius:50%;"></span>
-                <span class="ms-1">Food & Dining</span>
+        <!-- 🔹 New Monthly Comparison Graph -->
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h6 class="mb-3"><i class="fas fa-exchange-alt me-1"></i> Monthly Comparison</h6>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="monthlyComparisonChart"></canvas>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="badge bg-primary me-2">This Month</span>
+                    <span class="badge bg-secondary">Last Month</span>
+                </div>
             </div>
-            <div class="legend-item me-3 mb-1">
-                <span class="legend-color" style="display: inline-block; width:12px; height:12px; background:#00A4E8; border-radius:50%;"></span>
-                <span class="ms-1">Transport</span>
-            </div>
-            <div class="legend-item me-3 mb-1">
-                <span class="legend-color" style="display: inline-block; width:12px; height:12px; background:#ffc107; border-radius:50%;"></span>
-                <span class="ms-1">Bills</span>
-            </div>
-        </div>
-        
-        <div class="mt-3 text-center">
-            <small class="text-muted"><i class="fas fa-arrow-up text-success me-1"></i> 12% less than last month</small>
         </div>
     </div>
 
@@ -358,20 +562,21 @@
         window.requestAnimationFrame(step);
     }
     
-    // Initialize animated balance
+    // Initialize charts and other elements
     document.addEventListener('DOMContentLoaded', function() {
         animateValue("animatedBalance", 0, 5280, 1500);
         
-        // Initialize spending chart
-        const ctx = document.getElementById('spendingChart').getContext('2d');
-        new Chart(ctx, {
+        // Main Spending Chart
+        const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+        const spendingChart = new Chart(spendingCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Food & Dining', 'Transport', 'Bills', 'Shopping', 'Entertainment'],
+                labels: ['Housing', 'Food & Dining', 'Transport', 'Bills', 'Shopping', 'Entertainment'],
                 datasets: [{
-                    data: [1200, 800, 1500, 600, 400],
+                    data: [5200, 3050, 800, 1500, 600, 400],
                     backgroundColor: [
                         '#870a3c',
+                        '#dc3545',
                         '#00A4E8',
                         '#ffc107',
                         '#28a745',
@@ -386,9 +591,197 @@
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: P${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                onClick: (e, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const label = spendingChart.data.labels[index];
+                        alert(`You clicked on ${label} category. Would you like to see more details?`);
                     }
                 }
             }
+        });
+        
+        // Create custom legend for main chart
+        const legendContainer = document.getElementById('chartLegend');
+        spendingChart.data.labels.forEach((label, i) => {
+            const legendItem = document.createElement('div');
+            legendItem.className = 'legend-item';
+            legendItem.innerHTML = `
+                <span class="legend-color" style="background-color: ${spendingChart.data.datasets[0].backgroundColor[i]}"></span>
+                <span class="legend-text">${label}</span>
+            `;
+            legendItem.onclick = () => {
+                const meta = spendingChart.getDatasetMeta(0);
+                meta.data[i].hidden = !meta.data[i].hidden;
+                spendingChart.update();
+            };
+            legendContainer.appendChild(legendItem);
+        });
+        
+        // Groceries Trend Sparkline
+        new Chart(document.getElementById('groceriesTrend'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    data: [1200, 1500, 1400, 1600, 1850],
+                    borderColor: '#870a3c',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                }
+            }
+        });
+        
+        // Dining Trend Sparkline
+        new Chart(document.getElementById('diningTrend'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    data: [800, 950, 1000, 1100, 1200],
+                    borderColor: '#dc3545',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                }
+            }
+        });
+        
+        // Transport Trend Sparkline
+        new Chart(document.getElementById('transportTrend'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    data: [850, 900, 820, 800, 780],
+                    borderColor: '#00A4E8',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                }
+            }
+        });
+        
+        // Monthly Comparison Chart
+        new Chart(document.getElementById('monthlyComparisonChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Housing', 'Food', 'Transport', 'Bills', 'Entertainment'],
+                datasets: [
+                    {
+                        label: 'This Month',
+                        data: [5200, 3050, 800, 1500, 400],
+                        backgroundColor: '#870a3c',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Last Month',
+                        data: [5200, 2500, 900, 1500, 600],
+                        backgroundColor: '#6c757d',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: P${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'P' + value;
+                            }
+                        }
+                    }
+                },
+                onClick: (e, elements) => {
+                    if (elements.length > 0) {
+                        const datasetIndex = elements[0].datasetIndex;
+                        const index = elements[0].index;
+                        const labels = ['Housing', 'Food', 'Transport', 'Bills', 'Entertainment'];
+                        const periods = ['this month', 'last month'];
+                        alert(`You clicked on ${labels[index]} for ${periods[datasetIndex]}`);
+                    }
+                }
+            }
+        });
+        
+        // Time period selector functionality
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // In a real app, this would update the chart data
+                alert(`Loading data for ${this.dataset.period} view...`);
+            });
         });
         
         // Countdown timer for fraud alert

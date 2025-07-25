@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABSA Financial Wellness Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --absa-primary: #870a3c;
+            --absa-secondary: #00A4E8;
+            --absa-success: #28a745;
+            --absa-warning: #ffc107;
+            --absa-danger: #dc0032;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            background-color: var(--absa-primary);
+            padding: 12px 0;
+        }
+        
+        .card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .goal-card {
+            border-left: 4px solid var(--absa-secondary);
+        }
+        
+        .progress-lg {
+            height: 24px;
+            border-radius: 12px;
+        }
+        
+        .savings-goal-progress {
+            position: relative;
+        }
+        
+        .savings-goal-progress .progress-bar {
+            background: linear-gradient(90deg, var(--absa-secondary), #00c6ff);
+            position: relative;
+            overflow: visible;
+        }
+        
+        .progress-marker {
+            position: absolute;
+            right: 0;
+            top: -20px;
+            background: var(--absa-primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            transform: translateX(50%);
+        }
+        
+        .ai-suggestion {
+            background-color: #f0f8ff;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid var(--absa-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .celebration-animation {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .product-card {
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            border-color: var(--absa-secondary);
+            box-shadow: 0 8px 16px rgba(0, 164, 232, 0.1);
+        }
+        
+        .nudge-alert {
+            border-left: 4px solid var(--absa-warning);
+        }
+        
+        .positive-nudge {
+            border-left: 4px solid var(--absa-success);
+        }
+        
+        .financial-tip {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .workshop-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        }
+        
+        .slider-container {
+            padding: 0 15px;
+        }
+        
+        .budget-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+        }
+        
+        .budget-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--absa-primary);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <img src="images/absa_logo_red.png" class="logo" alt="ABSA Logo" style="height: 50px;">
+        <span class="navbar-brand ms-2">Financial Wellness Hub</span>
+        <div class="ms-auto d-flex align-items-center">
+            <a href="index.html" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h3><i class="fas fa-hands-helping me-2" style="color: var(--absa-primary);"></i> Your Financial Wellness Hub</h3>
+            <p class="text-muted">AI-powered tools to help you save, budget, and grow your money</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-primary" id="voice-assistant">
+                <i class="fas fa-microphone me-1"></i> Voice Assistant
+            </button>
+        </div>
+    </div>
+
+    <!-- Savings Goals Section -->
+    <div class="card goal-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4><i class="fas fa-bullseye me-2"></i> Savings Goals</h4>
+            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+                <i class="fas fa-plus me-1"></i> New Goal
+            </button>
+        </div>
+        
+        <!-- Goal Progress -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="savings-goal-progress mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Emergency Fund</span>
+                        <span>P3,200/P5,000</span>
+                    </div>
+                    <div class="progress progress-lg">
+                        <div class="progress-bar" role="progressbar" style="width: 64%;">
+                            <span class="progress-marker">64%</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-end">
+                        <small class="text-muted">Target date: 15 Oct 2023</small>
+                    </div>
+                </div>
+                
+                <!-- Celebration Animation (shown when goal reached) -->
+                <div class="celebration-animation text-center mb-3" style="display: none;">
+                    <i class="fas fa-trophy fa-3x text-warning mb-2"></i>
+                    <h5 class="text-success">Goal Achieved!</h5>
+                    <p>You've successfully saved P5,000 for your emergency fund</p>
+                    <button class="btn btn-sm btn-success">Start New Goal</button>
+                </div>
+                
+                <!-- AI Suggestions -->
+                <div class="ai-suggestion">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-robot me-2 mt-1" style="color: var(--absa-secondary);"></i>
+                        <div>
+                            <h6>AI Suggestion</h6>
+                            <p>Based on your spending, you could save P200 more this month by reducing dining out by 30%.</p>
+                            <button class="btn btn-sm btn-outline-primary">Apply Suggestion</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5><i class="fas fa-calculator me-2"></i> Automated Savings</h5>
+                        <p>Set up rules to save automatically:</p>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Round-up transactions
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Save 10% of deposits
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox">
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Weekly savings (P200)
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox">
+                                </div>
+                            </li>
+                        </ul>
+                        <button class="btn btn-sm btn-primary">Create Custom Rule</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Optimizer Section -->
+    <div class="card p-4 mb-4">
+        <h4 class="mb-3"><i class="fas fa-sliders-h me-2"></i> Budget Optimizer</h4>
+        
+        <div class="row">
+            <div class="col-md-5">
+                <div class="mb-4">
+                    <h5>AI-Adjusted Budget</h5>
+                    <p class="text-muted">Based on your spending patterns</p>
+                    
+                    <div class="slider-container mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Groceries</span>
+                            <span>P<span id="groceriesValue">1850</span></span>
+                        </div>
+                        <input type="range" min="1000" max="3000" value="1850" class="budget-slider" id="groceriesSlider">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Last month: P1,600</small>
+                            <small class="text-success">AI Recommended: P1,650</small>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Dining Out</span>
+                            <span>P<span id="diningValue">1200</span></span>
+                        </div>
+                        <input type="range" min="500" max="2500" value="1200" class="budget-slider" id="diningSlider">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Last month: P2,100</small>
+                            <small class="text-success">AI Recommended: P950</small>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Entertainment</span>
+                            <span>P<span id="entertainmentValue">600</span></span>
+                        </div>
+                        <input type="range" min="200" max="1500" value="600" class="budget-slider" id="entertainmentSlider">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Last month: P950</small>
+                            <small class="text-success">AI Recommended: P600</small>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary mt-3">Apply Optimized Budget</button>
+                </div>
+            </div>
+            
+            <div class="col-md-7">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="budgetComparisonChart"></canvas>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="badge bg-primary me-2">Your Budget</span>
+                    <span class="badge bg-success me-2">AI Recommendation</span>
+                    <span class="badge bg-secondary">Last Month</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Future Projections -->
+        <div class="mt-4">
+            <h5><i class="fas fa-chart-line me-2"></i> Future Projections</h5>
+            <div class="chart-container" style="height: 250px;">
+                <canvas id="futureProjectionChart"></canvas>
+            </div>
+            <div class="text-center mt-2">
+                <button class="btn btn-sm btn-outline-primary me-2">6 Months</button>
+                <button class="btn btn-sm btn-outline-primary me-2">1 Year</button>
+                <button class="btn btn-sm btn-primary">2 Years</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Recommendations -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4><i class="fas fa-lightbulb me-2"></i> Recommended For You</h4>
+            <small class="text-muted">Based on your spending and savings patterns</small>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card product-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                                <i class="fas fa-piggy-bank text-primary"></i>
+                            </div>
+                            <h5 class="mb-0">Goal Saver Account</h5>
+                        </div>
+                        <p class="small text-muted">Earn 5.2% interest when you save for specific goals</p>
+                        <ul class="small mb-3">
+                            <li>No monthly fees</li>
+                            <li>Free withdrawals for goal purchases</li>
+                            <li>Bonus interest for consistent saving</li>
+                        </ul>
+                        <button class="btn btn-sm btn-primary w-100">Open Account</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card product-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-success bg-opacity-10 p-2 rounded me-3">
+                                <i class="fas fa-coins text-success"></i>
+                            </div>
+                            <h5 class="mb-0">Investment Starter Portfolio</h5>
+                        </div>
+                        <p class="small text-muted">Low-risk investment matching your savings goals</p>
+                        <ul class="small mb-3">
+                            <li>From P500/month</li>
+                            <li>Diversified assets</li>
+                            <li>Expected 7-9% annual return</li>
+                        </ul>
+                        <button class="btn btn-sm btn-success w-100">Learn More</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card product-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-warning bg-opacity-10 p-2 rounded me-3">
+                                <i class="fas fa-shield-alt text-warning"></i>
+                            </div>
+                            <h5 class="mb-0">Income Protection</h5>
+                        </div>
+                        <p class="small text-muted">Protect your savings goals against unexpected events</p>
+                        <ul class="small mb-3">
+                            <li>From P99/month</li>
+                            <li>Covers illness and injury</li>
+                            <li>Pays up to P15,000/month</li>
+                        </ul>
+                        <button class="btn btn-sm btn-warning w-100">Get Quote</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Behavioral Nudges Section -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card nudge-alert p-3 mb-3">
+                <div class="d-flex">
+                    <i class="fas fa-exclamation-triangle text-warning me-3 mt-1"></i>
+                    <div>
+                        <h5>Spending Alert</h5>
+                        <p>You've spent 75% of your dining budget with 2 weeks remaining. Consider cooking at home more this week.</p>
+                        <button class="btn btn-sm btn-outline-warning me-2">Adjust Budget</button>
+                        <button class="btn btn-sm btn-outline-secondary">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card positive-nudge p-3 mb-3">
+                <div class="d-flex">
+                    <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                    <div>
+                        <h5>Great Job!</h5>
+                        <p>You're on track to save P500 more this month than last month. Keep it up!</p>
+                        <button class="btn btn-sm btn-outline-success">View Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Education Section -->
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4><i class="fas fa-graduation-cap me-2"></i> Financial Education</h4>
+            <button class="btn btn-sm btn-outline-primary">View All</button>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="financial-tip h-100">
+                    <h5><i class="fas fa-lightbulb me-2"></i> Tip of the Day</h5>
+                    <p>The 50/30/20 rule suggests spending 50% on needs, 30% on wants, and saving 20% of your income.</p>
+                    <button class="btn btn-sm btn-link p-0">Learn more</button>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="financial-tip h-100">
+                    <h5><i class="fas fa-book me-2"></i> Budgeting Basics</h5>
+                    <p>Learn how to create and stick to a budget that works for your lifestyle.</p>
+                    <button class="btn btn-sm btn-link p-0">Read Guide</button>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card workshop-card h-100 p-3">
+                    <h5><i class="fas fa-chalkboard-teacher me-2"></i> Upcoming Workshop</h5>
+                    <p class="small">"Smart Saving Strategies" - ABSA Main Mall Branch, 25th Oct 2025, 2PM</p>
+                    <button class="btn btn-sm btn-primary">RSVP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Goal Modal -->
+<div class="modal fade" id="newGoalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Savings Goal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Goal Name</label>
+                    <input type="text" class="form-control" placeholder="e.g. Vacation, New Car">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Target Amount (Pula)</label>
+                    <input type="number" class="form-control" placeholder="5000">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Target Date</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Initial Deposit</label>
+                    <input type="number" class="form-control" placeholder="0">
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox">
+                    <label class="form-check-label">Set up automatic savings for this goal</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Create Goal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Budget Comparison Chart
+        const budgetCtx = document.getElementById('budgetComparisonChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Groceries', 'Dining', 'Transport', 'Entertainment'],
+                datasets: [
+                    {
+                        label: 'Your Budget',
+                        data: [1850, 1200, 780, 600],
+                        backgroundColor: '#870a3c',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'AI Recommendation',
+                        data: [1650, 950, 800, 500],
+                        backgroundColor: '#28a745',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Last Month',
+                        data: [1600, 2100, 1000, 950],
+                        backgroundColor: '#6c757d',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'P' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Future Projection Chart
+        const futureCtx = document.getElementById('futureProjectionChart').getContext('2d');
+        new Chart(futureCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [
+                    {
+                        label: 'Current Path',
+                        data: [500, 1200, 1900, 2500, 3100, 3700, 4200],
+                        borderColor: '#870a3c',
+                        backgroundColor: 'rgba(135, 10, 60, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'With AI Recommendations',
+                        data: [500, 1300, 2200, 3200, 4200, 5200, 6300],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': P' + context.raw;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'P' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Budget slider functionality
+        document.getElementById('groceriesSlider').addEventListener('input', function() {
+            document.getElementById('groceriesValue').textContent = this.value;
+        });
+        
+        document.getElementById('diningSlider').addEventListener('input', function() {
+            document.getElementById('diningValue').textContent = this.value;
+        });
+        
+        document.getElementById('entertainmentSlider').addEventListener('input', function() {
+            document.getElementById('entertainmentValue').textContent = this.value;
+        });
+        
+        // Voice assistant button
+        document.getElementById('voice-assistant').addEventListener('click', function() {
+            alert("Voice assistant would be activated here in the full implementation");
+        });
+    });
+</script>
+</body>
+</html>
