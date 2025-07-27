@@ -211,7 +211,7 @@
         <h4 class="mb-0" style="color: var(--absa-primary); font-weight: 600;">SmartSpend AI</h4>
         <div class="d-flex align-items-center">
             <span class="badge rounded-pill bg-primary me-2" style="background-color: var(--absa-secondary) !important; font-size: 0.65rem; font-weight: 500;">PERSONAL ASSISTANT</span>
-            <span class="text-muted small" style="font-weight: 500;">Powered by ABSA</span>
+            <span class="text-muted small" style="font-weight: 500;">Powered by <span style="color: red;">ABSA</span></span>
         </div>
     </div>
     <div class="ms-auto">
@@ -282,7 +282,7 @@
                         
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <img src="images/absa_logo_icon.png" style="width: 24px; height: 24px;">
+                                <img src="images/absa_logo_red.png" style="width: 24px; height: 24px;">
                             </div>
                             <div class="flex-grow-1 ms-2">
                                 <p class="mb-0" style="color: var(--absa-primary); font-weight: 500;">What would you like to focus on today?</p>
@@ -402,7 +402,7 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
     
-    // Function to generate AI responses (simplified for demo)
+    // Improved function to generate AI responses with better question matching
     function generateAIResponse(question) {
         const responses = {
             "groceries": `
@@ -430,6 +430,50 @@
                 <div class="savings-tip">
                     <div class="savings-tip-header"><i class="fas fa-lightbulb me-2"></i>Savings Opportunity</div>
                     <p>You could save about P200/month on groceries by doing one weekly shop at Checkers instead of multiple smaller trips to premium stores.</p>
+                </div>
+            `,
+            "entertainment": `
+                <p>Your entertainment spending last month:</p>
+                <div class="spending-summary">
+                    <div class="d-flex justify-content-between">
+                        <span><strong>Total Entertainment Spend:</strong> P600</span>
+                        <span class="positive-change">↓37% from last month</span>
+                    </div>
+                    
+                    <p><strong>Breakdown:</strong></p>
+                    <ul>
+                        <li>Streaming Services: P299 (50%)</li>
+                        <li>Movies/Theater: P150 (25%)</li>
+                        <li>Events/Concerts: P100 (17%)</li>
+                        <li>Other: P51 (8%)</li>
+                    </ul>
+                </div>
+                
+                <div class="savings-tip">
+                    <div class="savings-tip-header"><i class="fas fa-lightbulb me-2"></i>Savings Tip</div>
+                    <p>You could save P150/month by reducing premium streaming subscriptions and using family plans.</p>
+                </div>
+            `,
+            "transport": `
+                <p>Your transport spending analysis:</p>
+                <div class="spending-summary">
+                    <div class="d-flex justify-content-between">
+                        <span><strong>Monthly Average:</strong> P780</span>
+                        <span class="positive-change">↓22% from last month</span>
+                    </div>
+                    
+                    <p><strong>Breakdown:</strong></p>
+                    <ul>
+                        <li>Fuel: P450 (58%)</li>
+                        <li>Ride Sharing: P200 (26%)</li>
+                        <li>Public Transport: P80 (10%)</li>
+                        <li>Maintenance: P50 (6%)</li>
+                    </ul>
+                </div>
+                
+                <div class="savings-tip">
+                    <div class="savings-tip-header"><i class="fas fa-car me-2"></i>Savings Tip</div>
+                    <p>You could save P100/month by carpooling twice weekly and using public transport more often.</p>
                 </div>
             `,
             "biggest expenses": `
@@ -672,28 +716,45 @@
                 </ul>
             `
         };
+
+        // Convert question to lowercase for easier matching
+        const q = question.toLowerCase();
         
-        question = question.toLowerCase();
-        
-        if (question.includes('grocery') || question.includes('groceries')) {
+        // Improved matching logic with more keywords
+        if (q.includes('grocery') || q.includes('grocer') || q.includes('food') || q.includes('supermarket') || q.includes('shopping')) {
             return responses.groceries;
-        } else if (question.includes('biggest') || question.includes('large') || question.includes('expens')) {
+        }
+        else if (q.includes('entertain') || q.includes('movie') || q.includes('stream') || q.includes('netflix') || q.includes('show') || q.includes('concert')) {
+            return responses.entertainment;
+        }
+        else if (q.includes('transport') || q.includes('uber') || q.includes('taxi') || q.includes('fuel') || q.includes('car') || q.includes('commute')) {
+            return responses.transport;
+        }
+        else if (q.includes('biggest') || q.includes('large') || q.includes('expens') || q.includes('top spend') || q.includes('highest')) {
             return responses["biggest expenses"];
-        } else if (question.includes('subscription') || question.includes('cancel') || question.includes('save')) {
+        }
+        else if (q.includes('subscription') || q.includes('cancel') || q.includes('save') || q.includes('recurring') || q.includes('membership') || q.includes('renewal')) {
             return responses.subscriptions;
-        } else if (question.includes('compare') || question.includes('last month') || question.includes('previous')) {
+        }
+        else if (q.includes('compare') || q.includes('last month') || q.includes('previous') || q.includes('vs') || q.includes('difference') || q.includes('change')) {
             return responses.compare;
-        } else if (question.includes('500') || question.includes('save money') || question.includes('cut back')) {
+        }
+        else if (q.includes('500') || q.includes('save money') || q.includes('cut back') || q.includes('reduce spend') || q.includes('save more') || q.includes('cut cost')) {
             return responses["save 500"];
-        } else if (question.includes('takeout') || question.includes('dining') || question.includes('restaurant')) {
+        }
+        else if (q.includes('takeout') || q.includes('dining') || q.includes('restaurant') || q.includes('eating out') || q.includes('delivery') || q.includes('food order')) {
             return responses.takeout;
-        } else if (question.includes('unusual') || question.includes('strange') || question.includes('unknown')) {
+        }
+        else if (q.includes('unusual') || q.includes('strange') || q.includes('unknown') || q.includes('suspicious') || q.includes('fraud') || q.includes('unexpected')) {
             return responses.unusual;
-        } else if (question.includes('budget') || question.includes('limit') || question.includes('target')) {
+        }
+        else if (q.includes('budget') || q.includes('limit') || q.includes('target') || q.includes('spending plan') || q.includes('allocation') || q.includes('allowance')) {
             return responses.budget;
-        } else if (question.includes('trend') || question.includes('pattern') || question.includes('history')) {
+        }
+        else if (q.includes('trend') || q.includes('pattern') || q.includes('history') || q.includes('over time') || q.includes('progress') || q.includes('change over')) {
             return responses.trends;
-        } else {
+        }
+        else {
             return responses.default;
         }
     }
@@ -735,5 +796,6 @@
         });
     });
 </script>
+
 </body>
 </html>
